@@ -32,8 +32,6 @@ try:
         # print(r)
         print(r[0]+ ' ' + r[1] + ' ' + r[2])
 
-
-
 except Exception as e:
     print('err: ', e)
     conn.rollback()

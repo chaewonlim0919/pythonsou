@@ -1,0 +1,38 @@
+# 문3) 성별 직원 현황 출력 : 성별(남/여) 단위로 직원 수와 평균 급여 출력
+
+# 성별 직원수 평균급여
+# 남 3 8500
+# 여 2 7800​
+
+import MySQLdb
+import pickle
+
+with open('mydb.dat', mode='rb') as obj:
+    config= pickle.load(obj)
+
+def chulbal():
+    try:
+        conn = MySQLdb.connect(**config)  # dict 자료
+        cursor = conn.cursor()
+        sql = '''
+            select jikwongen as 성별, count(jikwonno) as 직원수, avg(jikwonpay) as 평균급여
+            from jikwon
+            group by jikwongen
+            '''
+        print(sql)
+        cursor.execute(sql)                 
+        datas = cursor.fetchall()
+        print(datas[0],datas[1],datas[2])
+
+    except Exception as e:
+        print('err: ', e)
+        conn.rollback()
+    finally:
+        cursor.close()
+        conn.close()
+
+
+if __name__ == "__main__":
+    chulbal()
+
+
