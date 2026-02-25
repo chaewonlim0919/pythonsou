@@ -15,9 +15,9 @@ def chulbal():
         conn = MySQLdb.connect(**config)  # dict 자료
         cursor = conn.cursor()
         sql = '''
-            select jikwonno as 직원번호, jikwonname as 직원명, count(gogekno) as 관리 고객 수 
-            from jikwon inner join gogek on jikwonno = gogekdamsano
-            group by jikwonno, jikwonname
+            select jikwonno as 직원번호, jikwonname as 직원명, count(gogekno) as '관리 고객 수' 
+            from jikwon right outer join gogek on jikwonno = gogekdamsano
+            group by jikwonno
             '''
         print(sql)
         cursor.execute(sql)                 
@@ -36,5 +36,4 @@ def chulbal():
 
 if __name__ == "__main__":
     chulbal()
-
 

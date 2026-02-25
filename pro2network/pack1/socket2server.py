@@ -1,0 +1,27 @@
+import socket
+import sys
+
+# HOST = '127.0.0.1'
+HOST = ''
+PORT = 7788
+
+serversock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+try: 
+    serversock.bind(('127.0.0.1', 7788))
+    serversock.listen(5)  # client와 연결 정보수. 리스너 설정
+    print('서버(무한 루핑) 서비스 중...')
+
+    while True:
+        conn, addr = serversock.accept() 
+        print('client info: ', addr[0], ' ', addr[1]) # addr[0]: '127.0.0.1'(ip) / addr[1]: 56796 (port)
+        print(conn.recv(1024).decode())    # 수신 메시지 출력
+        # 메시지 송신 to client
+        conn.send(('from server: ' + str(addr[1]) + '너도 잘 지내라').encode('utf_8')) # 받을 때는 decode, 보낼 때는 encode
+
+except Exception as e:
+    ('error: ', e)
+    sys.exit()
+finally:
+    conn.close()
+    serversock.close()
