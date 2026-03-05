@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+    window.onload = () => {
+        document.querySelector("#btn1").onclick = funcJson;
+        document.querySelector("#btn2").onclick = funcCsv;
+    }
+
+    function funcJson(){
+        let xhr = new XMLHttpRequest();     // XMLHttpRequest 객체 생성
+
+        xhr.open("GET", "sangpum.json", true);     // open(요청방식, 파일주소, 비동기여부)
+        xhr.onreadystatechange = function() {
+            if(xhr.readyState === 4 && xhr.status === 200){
+                let data = JSON.parse(xhr.responseText);  // 반드시 xhr.responseText   //JSON.parse()는 JSON 문자열을 JavaScript 객체로 변환하는 함수
+                let output = "JSON 반환 결과<br>";
+                output += "코드&nbsp;&nbsp;&nbsp;품명<br>";
+                for (let i = 0; i < data.length; i++) {
+                    output += data[i].code + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + data[i].sang + "<br>";}
+                document.querySelector("#result").innerHTML = output;
+            } 
+            else {
+                document.querySelector("#result").innerHTML = "로딩 실패: " + xhr.status;
+            }
+        }
+        xhr.send();
+    };
+
+    function funcCsv(){
+        let xhr = new XMLHttpRequest();   
+
+        xhr.open("GET", "sangpum.csv", true);     
+        xhr.onreadystatechange = function(){
+            if(xhr.readyState === 4 && xhr.status === 200){
+                let text = xhr.responseText.trim()     // CSV 데이터 읽기
+                let lines = text.split("\n");   // 줄 단위 분리  //["1,사과","..."]
+
+                let output = "CSV 반환 결과<br>";
+
+                for(let i=0; i<lines.length; i++){
+                    if(lines[i] !== ""){
+                        let parts = lines[i].split(",");  //["1","사과"]
+                        let code = parts[0].trim();   // code = 1
+                        let sang = parts[1].trim();   // sang = 사과
+                        output += "코드는" + code + "상품명은" + sang + "<br>";
+                    }
+                }
+                document.querySelector("#result").innerHTML = output;
+            }
+        }
+        xhr.send();
+    }
+    </script>
+</head>
+<body>
+    <h3>전통 AJAX 처리</h3>
+    <button id="btn1">JSON 불러오기</button>
+    <button id="btn2">CSV 불러오기</button>
+    <hr>
+    <div id="result"></div>
+</body>
+</html>

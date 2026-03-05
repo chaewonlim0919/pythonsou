@@ -7,7 +7,7 @@
     <script>
         window.onload = () => {
             document.querySelector("#btnGet").onclick = getFunc;
-            document.querySelector("#btnGet").onclick = postFunc;
+            document.querySelector("#btnPost").onclick = postFunc;
         }
 
         let xhr;
@@ -18,31 +18,47 @@
             // alert(irum+" "+nai)
 
             xhr = new XMLHttpRequest();     // 서버와 Ajax 통신용 클래스
-            let fname = "js.py?irum=" + irum + "&nai=" + nai;
+            let fname = "js16.py?irum=" + irum + "&nai=" + nai;   // GET 방식은 URL에 데이터를 붙여서 전송
+            // 임시 방편용 js16.py 작성 (얘는 처리 후 json을 반환한다고 가정)
             xhr.open("GET", fname, true);      // true: 비동기, false: 동기
-            xhr.onreadystatechange = function(){
-                if(xhr.readyState === 4 && xhr.status === 200){
-                    process1
+            xhr.onreadystatechange = function(){         //서버 상태가 변경될 때 실행
+                if(xhr.readyState === 4 && xhr.status === 200){       // 통신 완료 + 서버 정상 응답
+                    process1();  
                 }
             }
+            xhr.send();   // 실제 서버 요청 전송
         }
-        xhr.send();
 
         function process1(){
-
+            alert(xhr.responseText);        // 서버에서 받은 데이터를 출력
         }
-        function postFunc(){
 
+        function postFunc(){
+            let irum = frm.name.value;
+            let nai = frm.age.value;
+
+            xhr = new XMLHttpRequest();     
+            let fname = "js16.py";        // POST는 URL에 데이터를 붙이지 않는다
+            xhr.open("POST", fname, true);      // true: 비동기, false: 동기
+            xhr.onreadystatechange = function(){
+                if(xhr.readyState === 4 && xhr.status === 200){
+                    process1();
+                }
+            }
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")    // POST 방식에서 데이터 형식 지정
+            xhr.send("irum="+irum+"&nai="+nai);   // body 영역에 포함되어 전송, 대용량 전송 가능
         }
     </script>
 </head>
 <body>
     <h2>Ajax 이해: get,post</h2>
-    <form name="frm">
+    <form name="frm">         <!-- form은 사용자가 입력한 데이터를 서버로 보내기 위한 HTML 태그 -->
         이름: <input type="text" name="name" value="tom"><br>
         나이: <input type="text" name="age" value="33"><br>
         <input type="button" value="get 방식" id="btnGet">
-        <input type="button" value="get 방식" id="btnPost">
+        <input type="button" value="post 방식" id="btnPost">
     </form>
 </body>
 </html>
+
+<!-- get 방식은 보안에도 취약하고 보내는 정보의 수가 post보다 제한적임-->
